@@ -130,9 +130,20 @@ $ sui client publish --gas-budget 100000000 --skip-dependency-verification
 
 export ADMIN_CAP_ID=0xdb50884fa1bd13657242d53373d636238477fab6128ef3d9d791240e11e0fd19
 export PACKAGE_ID=0x51c7eaa2dac07aa1a771030ef8dc438196813b66c26421e85677fac60087a6a6
+export TREASURY_CAP_ID=0x939c99a6dfa75c064b30ed24da678a
+export RECIPIENT_ID=0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16
 ```
 
-### 6. Initialize a new bank
+### 6. mint coins 
+```bash
+ $ sui client call --gas-budget 100000000 \
+ --package  0x2 \
+ --module coin \
+ --function mint_and_transfer \
+ --type-args $PACKAGE_ID::rmb::RMB \
+ --args $TREASURY_CAP_ID 100000000000 $RECIPIENT_ID
+```
+### 7. Initialize a new bank
 mint RMB and HK
 ```bash
 $ sui client call --function initialize --package $PACKAGE_ID --module virtualbank --args $ADMIN_CAP_ID --gas-budget 10000000
