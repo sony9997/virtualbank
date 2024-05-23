@@ -1,14 +1,61 @@
+/* 
+    # Module: virtualbank
 
-/// Module: virtualbank
-/// This module represents a virtual bank system.
+    > NOTE: sui version >= 1.24.1 and the edition = " 2024.beta ".
+
+    - This module is represents a virtual bank system, and user can swap their SUI coins to virtual bank. 
+    - Bank is a global shared object that is managed by the admin, which is designated by the ownership of the bank owner capability. 
+    - The bank owner can initialize bank, set the exchange rate, add coins to the bank, and withdraw coins from the bank. 
+    - Users can exchange two types of coins through virtual banks
+
+    ## Structs
+
+    ### (1) Bank 
+        - A Bank is a global shared object that is managed by the admin. 
+        - The bank owner can initialize bank, set the exchange rate, add coins to the bank, and withdraw coins from the bank. 
+    
+    ### (2) AdminCap:
+        - Ownership of the Bank object is represented by holding the bank owner capability object.  
+        - The shop owner has the ability to add items to the shop, unlist items, and withdraw from the shop. 
+
+    ## Functions
+    ### (1) initialize: initialize a bank
+        Function to initialize a bank with initial coins and rate.
+
+
+    ### (2) set_rate: Set rate to bank: 
+        Function to set the exchange rate of the bank.
+
+    ### (3) add: add coins to the bank.
+        Entry function to add coins to the bank.
+
+    ### (4) swap_a_b: Swaps coins of type B for coins of type A
+        Swaps coins of type B for coins of type A based on the bank's exchange rate.
+
+    ### (5) swap_b_a: Swaps coins of type B for coins of type A
+        Swaps coins of type B for coins of type A based on the bank's exchange rate.
+
+    ### (6) withdraw: Withdraws all coins of type A and B
+        Withdraws all coins of type A and B from the bank and transfers them to the sender.
+*/
 module virtualbank::virtualbank {
+    //==============================================================================================
+    // Dependencies
+    //==============================================================================================
     // Import necessary modules for balance and coin operations.
     use sui::balance::{Self, Balance};
     use sui::coin::{Self, Coin};
+    use sui::event;
 
+    //==============================================================================================
+    // Error codes 
+    //==============================================================================================
     // Define a constant for insufficient balance error code.
     const EInsufficientBalance: u64 = 11;
 
+    //==============================================================================================
+    // Structs 
+    //==============================================================================================
     // Define a struct representing administrative capability with a key.
     public struct AdminCap has key {
         id: UID
@@ -22,6 +69,58 @@ module virtualbank::virtualbank {
         rate: u64 // Exchange rate between coin A and coin B.
     }
 
+    //==============================================================================================
+    // Event structs - DO NOT MODIFY
+    //==============================================================================================
+    /**
+    * Represents the initialization data for a bank.
+    *
+    * @param bank_id - The unique identifier of the bank. (@type ID)
+    * @param rate - The annual interest rate of the bank expressed in basis points (0-100%). (@type u64)
+    */
+    public struct BankInitialize has copy, drop {
+        bank_id: ID,
+        rate: u64,
+    }
+
+    /**
+    * Represents the addition of coins where two different types of coins are involved.
+    *
+    * @param coin_a_balance - The balance of coin A after the addition operation. (@type u64)
+    * @param coin_b_balance - The balance of coin B after the addition operation. (@type u64)
+    */
+    public struct AddCoins has copy, drop {
+        coin_a_balance: u64,
+        coin_b_balance: u64,
+    }
+
+    /**
+    * Represents the swapping of coins between two types, with a specified swap direction.
+    *
+    * @param swap_type - An enum value indicating the swap direction: 0 for swapping from A to B, 1 for swapping from B to A. (@type u8)
+    * @param coin_a_balance - The balance of coin A after the swap operation. (@type u64)
+    * @param coin_b_balance - The balance of coin B after the swap operation. (@type u64)
+    */
+    public struct SwapCoins has copy, drop {
+        swap_type: u8, /// 0: swap_a_b, 1: swap_b_a
+        coin_a_balance: u64,
+        coin_b_balance: u64,
+    }
+
+    /**
+    * Represents the withdrawal of coins, involving two different types of coins.
+    *
+    * @param coin_a_balance - The remaining balance of coin A after the withdrawal operation. (@type u64)
+    * @param coin_b_balance - The remaining balance of coin B after the withdrawal operation. (@type u64)
+    */
+    public struct WithdrawCoins has copy, drop {
+        coin_a_balance: u64,
+        coin_b_balance: u64,
+    }
+
+    //==============================================================================================
+    // Functions
+    //==============================================================================================
     // Function to initialize the module by creating and transferring an AdminCap.
     fun init(ctx: &mut TxContext) {
         let admin_cap = AdminCap {
@@ -30,10 +129,26 @@ module virtualbank::virtualbank {
         transfer::transfer(admin_cap, tx_context::sender(ctx)) // Transfer the AdminCap to the sender of the transaction.
     }
 
-    // Function to initialize a bank with initial coins and rate.
+    /**
+    * Initializes the banking system with specific coins and an interest rate.
+    *
+    * This function sets up the initial state for a banking system by taking administrative capabilities,
+    * defining two distinct coin types, setting an interest rate, and utilizing a transaction context.
+    *
+    * @param _ :&AdminCap - The administrative capability required to perform the initialization. (Unused parameter)
+    * @param coin1: Coin<A> - The first type of coin to be managed within the bank. (@template A)
+    * @param coin2: Coin<B> - The second type of coin to be managed within the bank. (@template B)
+    * @param rate: u64 - The base interest rate applied to transactions within the bank. (@type u64)
+    * @param ctx: &mut TxContext - The mutable reference to the transaction context 
+    */
     public fun initialize<A,B>(_ :&AdminCap, coin1: Coin<A>, coin2: Coin<B>, rate:u64, ctx: &mut TxContext) {
+        let bank_id=object::new(ctx);// Create a new unique ID for the bank.
+        event::emit(BankInitialize{
+           bank_id : object::uid_to_inner(& bank_id), 
+           rate,
+        });
         let mut bank = Bank<A, B> {
-            id: object::new(ctx), // Create a new unique ID for the bank.
+            id: bank_id, 
             coin_a: balance::zero<A>(), // Initialize the balance of coin A to zero.
             coin_b: balance::zero<B>(), // Initialize the balance of coin B to zero.
             rate: rate, // Set the exchange rate.
@@ -47,20 +162,54 @@ module virtualbank::virtualbank {
         transfer::share_object(bank)
     }
 
-    // Function to set the exchange rate of the bank.
+    /**
+    *  Adjusts the interest rate for a specific bank.
+    *
+    * This function allows an administrator to change the interest rate associated with a bank,
+    * affecting future transactions involving the bank's coins. It requires administrative capabilities
+    * and a mutable reference to the bank to apply the new rate.
+    *
+    * @param _ :&AdminCap - The administrative capability required to modify the bank's interest rate. (Unused parameter)
+    * @param bank: &mut Bank<A, B> - A mutable reference to the bank whose interest rate is to be set. (@template A, B)
+    * @param rate: u64 - The new interest rate to be applied to the bank. Represented in basis points (0-100%). (@type u64)
+    * @param _ctx: &mut TxContext - The mutable reference to the transaction context
+    */
     public fun set_rate<A, B>(_ :&AdminCap, bank: &mut Bank<A, B>, rate: u64, _ctx: &mut TxContext) {
         bank.rate = rate // Update the exchange rate of the bank.
     }
 
-    // Entry function to add coins to the bank.
+    /**
+    * Adds amounts of two different coins to a bank account.
+    *
+    * This public entry function enables users to deposit quantities of two coin types into a bank.
+    * It requires mutable access to the bank to update the balances accordingly.
+    *
+    * @param coin1: Coin<A> - The first coin to be added to the bank account. (@template A)
+    * @param coin2: Coin<B> - The second coin to be added to the bank account. (@template B)
+    * @param bank: &mut Bank<A, B> - A mutable reference to the bank where the coins will be deposited. 
+    */
     public entry fun add<A, B>(coin1: Coin<A>, coin2: Coin<B>, bank: &mut Bank<A, B>) {
         let balance1 = coin::into_balance(coin1); // Convert the coin to balance format.
         balance::join(&mut bank.coin_a, balance1); // Add the balance to the coin A balance of the bank.
         let balance2 = coin::into_balance(coin2); // Convert the coin to balance format.
         balance::join(&mut bank.coin_b, balance2); // Add the balance to the coin B balance of the bank.
+        event::emit(AddCoins{
+           coin_a_balance : balance::value(&bank.coin_a), 
+           coin_b_balance : balance::value(&bank.coin_b),
+        });
     }
 
-    /// Swaps coins of type A for coins of type B based on the bank's exchange rate.
+    /**
+    * Executes a swap operation from coin type A to coin type B within a bank.
+    *
+    * This public entry function facilitates swapping coins of type A to coins of type B within the bank,
+    * updating the user's balance and interacting with the bank's state. It also utilizes a transaction context
+    * for logging and maintaining the integrity of the swap operation.
+    *
+    * @param coin: Coin<A> - The coin of type A to be swapped. (@template A)
+    * @param bank: &mut Bank<A, B> - A mutable reference to the bank where the swap operation takes place. (@template A, B)
+    * @param ctx: &mut TxContext - The mutable reference to the transaction context
+    */
     public entry fun swap_a_b<A, B>(coin: Coin<A>, bank: &mut Bank<A, B>, ctx: &mut TxContext) {
         let v1 = coin::value(&coin);
         
@@ -76,10 +225,26 @@ module virtualbank::virtualbank {
         balance::join(&mut bank.coin_a, balance);
         // Transfers the coins of type B to the sender of the transaction.
         transfer::public_transfer(coin2, tx_context::sender(ctx));
+
+        event::emit(SwapCoins{
+            swap_type: 0, 
+            coin_a_balance : balance::value(&bank.coin_a), 
+            coin_b_balance : balance::value(&bank.coin_b),
+        });
     }
 
    
-    /// Swaps coins of type B for coins of type A based on the bank's exchange rate.
+    /**
+    * Executes a swap operation from coin type B to coin type A within a bank.
+    *
+    * This public entry function facilitates swapping coins of type B to coins of type A within the bank,
+    * updating the user's balance and interacting with the bank's state. It also uses a transaction context
+    * for logging the swap event and maintaining the consistency of the transactional state.
+    *
+    * @param coin: Coin<B> - The coin of type B to be swapped. (@template B)
+    * @param bank: &mut Bank<A, B> - A mutable reference to the bank where the swap operation takes place. (@template A, B)
+    * @param ctx: &mut TxContext - The mutable reference to the transaction context
+    */
     public entry fun swap_b_a<A, B>(coin: Coin<B>, bank: &mut Bank<A, B>, ctx: &mut TxContext) {
         let v1 = coin::value(&coin);
         // Asserts that the coin value is greater than zero to prevent zero-value swaps.
@@ -95,10 +260,26 @@ module virtualbank::virtualbank {
         balance::join(&mut bank.coin_b, balance);
         // Transfers the coins of type A to the sender of the transaction.
         transfer::public_transfer(coin2, tx_context::sender(ctx));
+
+        event::emit(SwapCoins{
+            swap_type: 1, 
+            coin_a_balance : balance::value(&bank.coin_a), 
+            coin_b_balance : balance::value(&bank.coin_b),
+        });
     }
 
-    // Withdraws all coins of type A and B from the bank and transfers them to the sender.
     #[allow(lint(self_transfer))]
+    /**
+    * @function withdraw - Administered function to initiate a withdrawal process from a bank.
+    *
+    * This function allows an administrator to start a withdrawal operation from a bank, affecting the balances
+    * of the bank's managed coins. It requires administrative capabilities and a mutable bank reference to proceed.
+    * The transaction context is used for logging and ensuring the atomicity of the withdrawal action.
+    *
+    * @param _ :&AdminCap - The administrative capability needed to authorize the withdrawal operation. (Unused parameter)
+    * @param bank: &mut Bank<A, B> - A mutable reference to the bank from which funds are to be withdrawn. (@template A, B)
+    * @param ctx: &mut TxContext - The mutable reference to the transaction context
+    */
     public fun withdraw<A, B>(_ :&AdminCap, bank: &mut Bank<A, B>, ctx: &mut TxContext) {
         let balance1 = balance::value(&bank.coin_a);
         // Takes all coins of type A from the bank's balance.
@@ -111,5 +292,16 @@ module virtualbank::virtualbank {
         let coin2 = coin::take(&mut bank.coin_b, balance2, ctx);
         // Transfers the coins of type B to the sender of the transaction.
         transfer::public_transfer(coin2, tx_context::sender(ctx));
+
+        event::emit(WithdrawCoins{
+            coin_a_balance : balance1, 
+            coin_b_balance : balance2,
+        });
+    }
+
+    #[test_only]
+    /// Wrapper of module initializer for testing
+    public fun test_init(ctx: &mut TxContext) {
+        init(ctx)
     }
 }
