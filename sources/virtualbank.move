@@ -270,7 +270,7 @@ module virtualbank::virtualbank {
 
     #[allow(lint(self_transfer))]
     /**
-    * @function withdraw - Administered function to initiate a withdrawal process from a bank.
+    * Administered function to initiate a withdrawal process from a bank.
     *
     * This function allows an administrator to start a withdrawal operation from a bank, affecting the balances
     * of the bank's managed coins. It requires administrative capabilities and a mutable bank reference to proceed.

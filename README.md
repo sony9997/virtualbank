@@ -17,6 +17,13 @@
 - Ownership of the Bank object is represented by holding the bank owner capability object.  
 - The shop owner has the ability to add items to the shop, unlist items, and withdraw from the shop. 
 
+### (3) RMB:
+- The `virtualbank::rmb` module represents a virtual bank system for the Chinese Renminbi (RMB)
+
+### (4) USD:
+- The `virtualbank::usd` module outlines a structure and function for initializing a representation of the United States Dollar (USD)
+
+
 ## Functions
 ### (1) initialize: initialize a bank
     Function to initialize a bank with initial coins and rate.
@@ -101,50 +108,368 @@ $ sui client gas
 $ sui client publish --gas-budget 100000000 --skip-dependency-verification
 
 ...
-│  ┌──                                                                                                      │
-│  │ ObjectID: 0xdb50884fa1bd13657242d53373d636238477fab6128ef3d9d791240e11e0fd19                           │
-│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                             │
-│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )          │
-│  │ ObjectType: 0x51c7eaa2dac07aa1a771030ef8dc438196813b66c26421e85677fac60087a6a6::virtualbank::AdminCap  │
-│  │ Version: 58                                                                                            │
-│  │ Digest: BpNTHaLrGasRWXgG5DREQ1e86TWPVbrXkJWzS2xAuQDy                                                   │
-│  └──                                                                                                      │
-│ Mutated Objects:                                                                                          │
-│  ┌──                                                                                                      │
-│  │ ObjectID: 0x939c99a6dfa75c064b30ed24da678a2ab8b5e2713bd89a7e3ab9609f1e8730cd                           │
-│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                             │
-│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )          │
-│  │ ObjectType: 0x2::coin::Coin<0x2::sui::SUI>                                                             │
-│  │ Version: 58                                                                                            │
-│  │ Digest: ngKMJigoDmh2Yz2mQ5whQN9ewCcHgewHQ1ksEAG9XMk                                                    │
-│  └──                                                                                                      │
-│ Published Objects:                                                                                        │
-│  ┌──                                                                                                      │
-│  │ PackageID: 0x51c7eaa2dac07aa1a771030ef8dc438196813b66c26421e85677fac60087a6a6                          │
-│  │ Version: 1                                                                                             │
-│  │ Digest: 8Ye2GtAWg8nyrLGijSULtSc9CybvU5HLgyWeYAR6NwZc                                                   │
-│  │ Modules: virtualbank                                                                                   │
-│  └──                                                                                                      │
-╰───────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Object Changes                                                                                                        │
+├───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Created Objects:                                                                                                      │
+│  ┌──                                                                                                                  │
+│  │ ObjectID: 0x1e98e504d2b34129399425ccb3ab11ec5ae5f5aa5d347f1360b1a5418567633f                                       │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                         │
+│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )                      │
+│  │ ObjectType: 0x2::coin::TreasuryCap<0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::rmb::RMB>   │
+│  │ Version: 61                                                                                                        │
+│  │ Digest: 7MegauzmtYQqmGe9ZaVFPQRkTHdADo8ZBa5PeKLcsgDK                                                               │
+│  └──                                                                                                                  │
+│  ┌──                                                                                                                  │
+│  │ ObjectID: 0x226c027772ce696772de768b0621c453f6166d348185df1f9714a4bad5214e53                                       │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                         │
+│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )                      │
+│  │ ObjectType: 0x2::package::UpgradeCap                                                                               │
+│  │ Version: 61                                                                                                        │
+│  │ Digest: 6YmtZsEoXa3ufNXSruLLL36EcPiG9pCp1CPR6PQ2h3sV                                                               │
+│  └──                                                                                                                  │
+│  ┌──                                                                                                                  │
+│  │ ObjectID: 0x56d9f62a9f7d478e11d770f3296911e9aa2a504c8e474f2e680efc77f10b2703                                       │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                         │
+│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )                      │
+│  │ ObjectType: 0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::virtualbank::AdminCap              │
+│  │ Version: 61                                                                                                        │
+│  │ Digest: AYoiJUXtFaKegt1DkkAzgDvWpKpTo2PJcCBoC3wUvVcM                                                               │
+│  └──                                                                                                                  │
+│  ┌──                                                                                                                  │
+│  │ ObjectID: 0x9650b740636d565c7bb2eb468c720801ef2fd834ac8ab1336f98b9a3ec4db030                                       │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                         │
+│  │ Owner: Immutable                                                                                                   │
+│  │ ObjectType: 0x2::coin::CoinMetadata<0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::rmb::RMB>  │
+│  │ Version: 61                                                                                                        │
+│  │ Digest: 2rZRbfNnWgcxt9bPEUmtJGsH8CsUUaPiLouAjF9zTKT7                                                               │
+│  └──                                                                                                                  │
+│  ┌──                                                                                                                  │
+│  │ ObjectID: 0xcbb5b062ea95369f0f51fb7094b49e0a933b44477690dbbdbde87e311960c27c                                       │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                         │
+│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )                      │
+│  │ ObjectType: 0x2::coin::TreasuryCap<0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::usd::USD>   │
+│  │ Version: 61                                                                                                        │
+│  │ Digest: 4SQpHuUd3AL1H1FKzTyZ89UBoKEwZDKzDnB2fasCbzTF                                                               │
+│  └──                                                                                                                  │
+│  ┌──                                                                                                                  │
+│  │ ObjectID: 0xee3867040521900fbe72167fe2d86f1f69b34bea35a69ec0927d363de93f798a                                       │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                         │
+│  │ Owner: Immutable                                                                                                   │
+│  │ ObjectType: 0x2::coin::CoinMetadata<0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::usd::USD>  │
+│  │ Version: 61                                                                                                        │
+│  │ Digest: CR8seCVdZUkmgL55CzaCYTmkLYgSauTByieRJSpBLfrb                                                               │
+│  └──                                                                                                                  │
+│ Mutated Objects:                                                                                                      │
+│  ┌──                                                                                                                  │
+│  │ ObjectID: 0x939c99a6dfa75c064b30ed24da678a2ab8b5e2713bd89a7e3ab9609f1e8730cd                                       │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                         │
+│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )                      │
+│  │ ObjectType: 0x2::coin::Coin<0x2::sui::SUI>                                                                         │
+│  │ Version: 61                                                                                                        │
+│  │ Digest: HKQ7UAx51EH5yVt42H2tHC1CL5Fts48wnqH8yN3FzLgp                                                               │
+│  └──                                                                                                                  │
+│ Published Objects:                                                                                                    │
+│  ┌──                                                                                                                  │
+│  │ PackageID: 0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d                                      │
+│  │ Version: 1                                                                                                         │
+│  │ Digest: 3hVgkHP7WKohSs6FPYmt7qsPezprTqssMCzm1UjikUYs                                                               │
+│  │ Modules: rmb, usd, virtualbank                                                                                     │
+│  └──                                                                                                                  │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ...
 
-export ADMIN_CAP_ID=0xdb50884fa1bd13657242d53373d636238477fab6128ef3d9d791240e11e0fd19
-export PACKAGE_ID=0x51c7eaa2dac07aa1a771030ef8dc438196813b66c26421e85677fac60087a6a6
-export TREASURY_CAP_ID=0x939c99a6dfa75c064b30ed24da678a
+export ADMIN_CAP_ID=0x56d9f62a9f7d478e11d770f3296911e9aa2a504c8e474f2e680efc77f10b2703
+export PACKAGE_ID=0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d
 export RECIPIENT_ID=0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16
+export RMB_ID=0x1e98e504d2b34129399425ccb3ab11ec5ae5f5aa5d347f1360b1a5418567633f
+export USD_ID=0xcbb5b062ea95369f0f51fb7094b49e0a933b44477690dbbdbde87e311960c27c
+
 ```
 
 ### 6. mint coins 
+mint RMB and USD to the bank
+
 ```bash
  $ sui client call --gas-budget 100000000 \
  --package  0x2 \
  --module coin \
  --function mint_and_transfer \
  --type-args $PACKAGE_ID::rmb::RMB \
- --args $TREASURY_CAP_ID 100000000000 $RECIPIENT_ID
+ --args $RMB_ID 100000000000 $RECIPIENT_ID
+
+ ...
+
+╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Object Changes                                                                                                       │
+├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Created Objects:                                                                                                     │
+│  ┌──                                                                                                                 │
+│  │ ObjectID: 0x98e91d13d7cd61ed735db56c06903973c931be2f0c3d336f39b6c26b1c7bbe37                                      │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                        │
+│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )                     │
+│  │ ObjectType: 0x2::coin::Coin<0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::rmb::RMB>         │
+│  │ Version: 62                                                                                                       │
+│  │ Digest: EWM9yAyA2AH68eMe31A5UVmo9v7YhQccdFFBbJd9iMAA                                                              │
+│  └──                                                                                                                 │
+│ Mutated Objects:                                                                                                     │
+│  ┌──                                                                                                                 │
+│  │ ObjectID: 0x1e98e504d2b34129399425ccb3ab11ec5ae5f5aa5d347f1360b1a5418567633f                                      │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                        │
+│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )                     │
+│  │ ObjectType: 0x2::coin::TreasuryCap<0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::rmb::RMB>  │
+│  │ Version: 62                                                                                                       │
+│  │ Digest: FiqJDwjnHKy3fGww4tk2ytEf46QwRnm2c5i2RGwsP4nW                                                              │
+│  └──                                                                                                                 │
+│  ┌──                                                                                                                 │
+│  │ ObjectID: 0x939c99a6dfa75c064b30ed24da678a2ab8b5e2713bd89a7e3ab9609f1e8730cd                                      │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                        │
+│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )                     │
+│  │ ObjectType: 0x2::coin::Coin<0x2::sui::SUI>                                                                        │
+│  │ Version: 62                                                                                                       │
+│  │ Digest: 9x4jVveivTXCozzsSXbP9xcqijHb4ymhVRooTHWJW8HP                                                              │
+│  └──                                                                                                                 │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ...
+
+ export COIN_A=0x98e91d13d7cd61ed735db56c06903973c931be2f0c3d336f39b6c26b1c7bbe37
+
+
+$ sui client call --gas-budget 100000000 \
+ --package  0x2 \
+ --module coin \
+ --function mint_and_transfer \
+ --type-args $PACKAGE_ID::usd::USD \
+ --args $USD_ID 100000000000 $RECIPIENT_ID
+
+ ...
+ ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Object Changes                                                                                                       │
+├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Created Objects:                                                                                                     │
+│  ┌──                                                                                                                 │
+│  │ ObjectID: 0xa6b4eb8d717190932a14c7a5db5963e7ab32db677f75f6c3fbd557c351867ee9                                      │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                        │
+│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )                     │
+│  │ ObjectType: 0x2::coin::Coin<0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::usd::USD>         │
+│  │ Version: 63                                                                                                       │
+│  │ Digest: 45KGVMyP8EmGZgfGdPxAhS4rvrdRMukAwoRXn6vJjhE2                                                              │
+│  └──                                                                                                                 │
+│ Mutated Objects:                                                                                                     │
+│  ┌──                                                                                                                 │
+│  │ ObjectID: 0x939c99a6dfa75c064b30ed24da678a2ab8b5e2713bd89a7e3ab9609f1e8730cd                                      │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                        │
+│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )                     │
+│  │ ObjectType: 0x2::coin::Coin<0x2::sui::SUI>                                                                        │
+│  │ Version: 63                                                                                                       │
+│  │ Digest: FMgPZHp2fpBwUrJC2HnCwKUs2NeiJjCzdEGopbx7JqWo                                                              │
+│  └──                                                                                                                 │
+│  ┌──                                                                                                                 │
+│  │ ObjectID: 0xcbb5b062ea95369f0f51fb7094b49e0a933b44477690dbbdbde87e311960c27c                                      │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                        │
+│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )                     │
+│  │ ObjectType: 0x2::coin::TreasuryCap<0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::usd::USD>  │
+│  │ Version: 63                                                                                                       │
+│  │ Digest: 3oc1Xvu26KFpTxBonj11xVDeir3EiZeh3AMvnsGbYBur                                                              │
+│  └──                                                                                                                 │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ...
+
+export COIN_B=0xa6b4eb8d717190932a14c7a5db5963e7ab32db677f75f6c3fbd557c351867ee9
+
 ```
+
 ### 7. Initialize a new bank
-mint RMB and HK
+
 ```bash
-$ sui client call --function initialize --package $PACKAGE_ID --module virtualbank --args $ADMIN_CAP_ID --gas-budget 10000000
+$ sui client call --function initialize --package $PACKAGE_ID --module virtualbank --args $ADMIN_CAP_ID $COIN_A $COIN_B 7 --type-args $PACKAGE_ID::rmb::RMB  $PACKAGE_ID::usd::USD --gas-budget 10000000
+
+...
+                                                         │
+│  ┌──                                                                                                                                                                                                                                                              │
+│  │ ObjectID: 0x84825cf4bbed848d0c9f06358d045d1894bb23ac52b891fdbbf64e0fd1e52527                                                                                                                                                                                   │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                                                                                                                                                                     │
+│  │ Owner: Shared                                                                                                                                                                                                                                                  │
+│  │ ObjectType: 0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::virtualbank::Bank<0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::rmb::RMB, 0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::usd::USD>  │
+│  │ Version: 65                                                                                                                                                                                                                                                    │
+│  │ Digest: J7aSUdvihxMEZgZYntmdMUnVsuvAj7iyjU5EK16hhz5k                                                                                                                                                                                                           │
+│  └──                                                                                        
+
+...
+
+╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Transaction Block Events                                                                                      │
+├───────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  ┌──                                                                                                          │
+│  │ EventID: EWLZpG4jSMoHvqUULwM2bxJbPyvSrYfAPr6s9QxBQaV1:0                                                    │
+│  │ PackageID: 0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d                              │
+│  │ Transaction Module: virtualbank                                                                            │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                 │
+│  │ EventType: 0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::virtualbank::BankInitialize │
+│  │ ParsedJSON:                                                                                                │
+│  │   ┌─────────┬────────────────────────────────────────────────────────────────────┐                         │
+│  │   │ bank_id │ 0x84825cf4bbed848d0c9f06358d045d1894bb23ac52b891fdbbf64e0fd1e52527 │                         │
+│  │   ├─────────┼────────────────────────────────────────────────────────────────────┤                         │
+│  │   │ rate    │ 7                                                                  │                         │
+│  │   └─────────┴────────────────────────────────────────────────────────────────────┘                         │
+│  └──                                                                                                          │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+...
+
+export BANK_ID=0x84825cf4bbed848d0c9f06358d045d1894bb23ac52b891fdbbf64e0fd1e52527
+
+```
+
+### 8. Adds amounts of two different coins to a bank account.
+
+```bash
+$ sui client call --gas-budget 100000000 \
+ --package  0x2 \
+ --module coin \
+ --function mint_and_transfer \
+ --type-args $PACKAGE_ID::rmb::RMB \
+ --args $RMB_ID 10000000 $RECIPIENT_ID
+
+ ...
+╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Object Changes                                                                                                       │
+├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Created Objects:                                                                                                     │
+│  ┌──                                                                                                                 │
+│  │ ObjectID: 0x549c1f5fd87d6715b2e998c5bfac1a027c76b7190d0af69d297b63e45b86bdb9                                      │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                        │
+│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )                     │
+│  │ ObjectType: 0x2::coin::Coin<0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::rmb::RMB>         │
+│  │ Version: 67                                                                                                       │
+│  │ Digest: 5YiRpe39FHJvNdxnVF5LhrnqPefmKHQK4kUttAxtq2kz                                                              │
+│  └──                                                                                                                 │
+ ...
+
+
+ $ sui client call --gas-budget 100000000 \
+ --package  0x2 \
+ --module coin \
+ --function mint_and_transfer \
+ --type-args $PACKAGE_ID::usd::USD \
+ --args $USD_ID 1000000 $RECIPIENT_ID
+
+ ...
+╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Object Changes                                                                                                       │
+├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Created Objects:                                                                                                     │
+│  ┌──                                                                                                                 │
+│  │ ObjectID: 0x2ed837354373059d7b2d720bfa3d6f26fc9a64e1c0ad946fb37cf7bc6117538b                                      │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                        │
+│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )                     │
+│  │ ObjectType: 0x2::coin::Coin<0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::usd::USD>         │
+│  │ Version: 68                                                                                                       │
+│  │ Digest: DjmdGDA6EFxzdpzdg5NZYMi9kD6iJm5upMsw6uDLadoZ                                                              │
+│  └──                                                                                                                 │
+ ...
+
+export COIN_A=0x549c1f5fd87d6715b2e998c5bfac1a027c76b7190d0af69d297b63e45b86bdb9
+export COIN_B=0x2ed837354373059d7b2d720bfa3d6f26fc9a64e1c0ad946fb37cf7bc6117538b
+
+$ sui client call --function add --package $PACKAGE_ID --module virtualbank --args $COIN_A $COIN_B $BANK_ID --type-args $PACKAGE_ID::rmb::RMB  $PACKAGE_ID::usd::USD --gas-budget 10000000
+
+...
+╭─────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Transaction Block Events                                                                                │
+├─────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  ┌──                                                                                                    │
+│  │ EventID: EU2E81zTsYm57dv3pkTUaqsoAvsuD6iTFa1z32VACWsv:0                                              │
+│  │ PackageID: 0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d                        │
+│  │ Transaction Module: virtualbank                                                                      │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                           │
+│  │ EventType: 0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::virtualbank::AddCoins │
+│  │ ParsedJSON:                                                                                          │
+│  │   ┌────────────────┬──────────────┐                                                                  │
+│  │   │ coin_a_balance │ 100010000000 │                                                                  │
+│  │   ├────────────────┼──────────────┤                                                                  │
+│  │   │ coin_b_balance │ 100001000000 │                                                                  │
+│  │   └────────────────┴──────────────┘                                                                  │
+│  └──                                                                                                    │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+...
+
+```
+
+### 9. Executes a swap operation from coin type RMB to coin type USD within a bank.
+
+```bash
+$ sui client call --gas-budget 100000000 \
+ --package  0x2 \
+ --module coin \
+ --function mint_and_transfer \
+ --type-args $PACKAGE_ID::rmb::RMB \
+ --args $RMB_ID 10000000 $RECIPIENT_ID
+
+...
+╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Object Changes                                                                                                       │
+├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Created Objects:                                                                                                     │
+│  ┌──                                                                                                                 │
+│  │ ObjectID: 0x64330d5a3f028fd36825f52cd5f7d072974d5b5094baec626519109434e7fd90                                      │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                        │
+│  │ Owner: Account Address ( 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16 )                     │
+│  │ ObjectType: 0x2::coin::Coin<0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::rmb::RMB>         │
+│  │ Version: 70                                                                                                       │
+│  │ Digest: 5iShhynioeiXb7uaEtYDzs7y44pSkMq5kwhx1PjrFmA3                                                              │
+│  └──                                                                                                                 │
+...
+
+export COIN_A=0x64330d5a3f028fd36825f52cd5f7d072974d5b5094baec626519109434e7fd90
+
+$ sui client call --function swap_a_b --package $PACKAGE_ID --module virtualbank --args $COIN_A $BANK_ID --type-args $PACKAGE_ID::rmb::RMB  $PACKAGE_ID::usd::USD --gas-budget 10000000
+
+...
+╭──────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Transaction Block Events                                                                                 │
+├──────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  ┌──                                                                                                     │
+│  │ EventID: 2wvdnrSpdZSAnUMe4LNKmZEQpMfJPEjM4VVhgD7QXmuz:0                                               │
+│  │ PackageID: 0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d                         │
+│  │ Transaction Module: virtualbank                                                                       │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                            │
+│  │ EventType: 0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::virtualbank::SwapCoins │
+│  │ ParsedJSON:                                                                                           │
+│  │   ┌────────────────┬──────────────┐                                                                   │
+│  │   │ coin_a_balance │ 100020000000 │                                                                   │
+│  │   ├────────────────┼──────────────┤                                                                   │
+│  │   │ coin_b_balance │ 99931000000  │                                                                   │
+│  │   ├────────────────┼──────────────┤                                                                   │
+│  │   │ swap_type      │ 0            │                                                                   │
+│  │   └────────────────┴──────────────┘                                                                   │
+│  └──                                                                                                     │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+...
+
+```
+
+### 10. Administered function to initiate a withdrawal process from a bank.
+
+```bash
+$ sui client call --function withdraw --package $PACKAGE_ID --module virtualbank --args $ADMIN_CAP_ID $BANK_ID --type-args $PACKAGE_ID::rmb::RMB  $PACKAGE_ID::usd::USD --gas-budget 10000000
+
+╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Transaction Block Events                                                                                     │
+├──────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  ┌──                                                                                                         │
+│  │ EventID: FuqXzyso5ibzFEKbjFqdwBv2EuJfeJThCskHaw6McjgF:0                                                   │
+│  │ PackageID: 0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d                             │
+│  │ Transaction Module: virtualbank                                                                           │
+│  │ Sender: 0x31b9bdb2d50def6e6e2326113763d13cc475fa447d14365ba9ac52f69d9adc16                                │
+│  │ EventType: 0xb8e912d9a861f658a45a1b31c7fff3348a10bbe5b1fb2077ab242427f947e22d::virtualbank::WithdrawCoins │
+│  │ ParsedJSON:                                                                                               │
+│  │   ┌────────────────┬──────────────┐                                                                       │
+│  │   │ coin_a_balance │ 100020000000 │                                                                       │
+│  │   ├────────────────┼──────────────┤                                                                       │
+│  │   │ coin_b_balance │ 99931000000  │                                                                       │
+│  │   └────────────────┴──────────────┘                                                                       │
+│  └──                                                                                                         │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
 ```
