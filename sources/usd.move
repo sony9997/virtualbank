@@ -24,7 +24,7 @@ module virtualbank::usd {
 
     public struct USD has drop {}
 
-    fun init(witness: USD, ctx: &mut TxContext) {
+    public fun init(witness: USD, ctx: &mut TxContext) {
         let (treasury, metadata) = coin::create_currency(witness, 6, b"USD", b"", b"", option::none(), ctx);
         transfer::public_freeze_object(metadata);
         transfer::public_transfer(treasury, tx_context::sender(ctx))

@@ -1,61 +1,15 @@
-/* 
-    # Module: virtualbank
-
-    > NOTE: sui version >= 1.24.1 and the edition = " 2024.beta ".
-
-    - This module is represents a virtual bank system, and user can swap their SUI coins to virtual bank. 
-    - Bank is a global shared object that is managed by the admin, which is designated by the ownership of the bank owner capability. 
-    - The bank owner can initialize bank, set the exchange rate, add coins to the bank, and withdraw coins from the bank. 
-    - Users can exchange two types of coins through virtual banks
-
-    ## Structs
-
-    ### (1) Bank 
-        - A Bank is a global shared object that is managed by the admin. 
-        - The bank owner can initialize bank, set the exchange rate, add coins to the bank, and withdraw coins from the bank. 
-    
-    ### (2) AdminCap:
-        - Ownership of the Bank object is represented by holding the bank owner capability object.  
-        - The shop owner has the ability to add items to the shop, unlist items, and withdraw from the shop. 
-
-    ## Functions
-    ### (1) initialize: initialize a bank
-        Function to initialize a bank with initial coins and rate.
-
-
-    ### (2) set_rate: Set rate to bank: 
-        Function to set the exchange rate of the bank.
-
-    ### (3) add: add coins to the bank.
-        Entry function to add coins to the bank.
-
-    ### (4) swap_a_b: Swaps coins of type B for coins of type A
-        Swaps coins of type B for coins of type A based on the bank's exchange rate.
-
-    ### (5) swap_b_a: Swaps coins of type B for coins of type A
-        Swaps coins of type B for coins of type A based on the bank's exchange rate.
-
-    ### (6) withdraw: Withdraws all coins of type A and B
-        Withdraws all coins of type A and B from the bank and transfers them to the sender.
-*/
 module virtualbank::virtualbank {
-    //==============================================================================================
-    // Dependencies
-    //==============================================================================================
     // Import necessary modules for balance and coin operations.
     use sui::balance::{Self, Balance};
     use sui::coin::{Self, Coin};
     use sui::event;
+    use sui::transfer;
+    use sui::tx_context::{Self, TxContext};
+    use sui::object::{Self, UID};
 
-    //==============================================================================================
-    // Error codes 
-    //==============================================================================================
     // Define a constant for insufficient balance error code.
     const EInsufficientBalance: u64 = 11;
 
-    //==============================================================================================
-    // Structs 
-    //==============================================================================================
     // Define a struct representing administrative capability with a key.
     public struct AdminCap has key {
         id: UID
@@ -122,7 +76,7 @@ module virtualbank::virtualbank {
     // Functions
     //==============================================================================================
     // Function to initialize the module by creating and transferring an AdminCap.
-    fun init(ctx: &mut TxContext) {
+    public fun init(ctx: &mut TxContext) {
         let admin_cap = AdminCap {
             id: object::new(ctx) // Create a new unique ID for the AdminCap.
         };
@@ -141,11 +95,11 @@ module virtualbank::virtualbank {
     * @param rate: u64 - The base interest rate applied to transactions within the bank. (@type u64)
     * @param ctx: &mut TxContext - The mutable reference to the transaction context 
     */
-    public fun initialize<A,B>(_ :&AdminCap, coin1: Coin<A>, coin2: Coin<B>, rate:u64, ctx: &mut TxContext) {
-        let bank_id=object::new(ctx);// Create a new unique ID for the bank.
+    public fun initialize<A, B>(_ :&AdminCap, coin1: Coin<A>, coin2: Coin<B>, rate: u64, ctx: &mut TxContext) {
+        let bank_id = object::new(ctx); // Create a new unique ID for the bank.
         event::emit(BankInitialize{
-           bank_id : object::uid_to_inner(& bank_id), 
-           rate,
+            bank_id: object::uid_to_inner(&bank_id), 
+            rate,
         });
         let mut bank = Bank<A, B> {
             id: bank_id, 
@@ -194,8 +148,8 @@ module virtualbank::virtualbank {
         let balance2 = coin::into_balance(coin2); // Convert the coin to balance format.
         balance::join(&mut bank.coin_b, balance2); // Add the balance to the coin B balance of the bank.
         event::emit(AddCoins{
-           coin_a_balance : balance::value(&bank.coin_a), 
-           coin_b_balance : balance::value(&bank.coin_b),
+            coin_a_balance: balance::value(&bank.coin_a), 
+            coin_b_balance: balance::value(&bank.coin_b),
         });
     }
 
@@ -228,12 +182,11 @@ module virtualbank::virtualbank {
 
         event::emit(SwapCoins{
             swap_type: 0, 
-            coin_a_balance : balance::value(&bank.coin_a), 
-            coin_b_balance : balance::value(&bank.coin_b),
+            coin_a_balance: balance::value(&bank.coin_a), 
+            coin_b_balance: balance::value(&bank.coin_b),
         });
     }
 
-   
     /**
     * Executes a swap operation from coin type B to coin type A within a bank.
     *
@@ -263,8 +216,8 @@ module virtualbank::virtualbank {
 
         event::emit(SwapCoins{
             swap_type: 1, 
-            coin_a_balance : balance::value(&bank.coin_a), 
-            coin_b_balance : balance::value(&bank.coin_b),
+            coin_a_balance: balance::value(&bank.coin_a), 
+            coin_b_balance: balance::value(&bank.coin_b),
         });
     }
 
@@ -294,8 +247,8 @@ module virtualbank::virtualbank {
         transfer::public_transfer(coin2, tx_context::sender(ctx));
 
         event::emit(WithdrawCoins{
-            coin_a_balance : balance1, 
-            coin_b_balance : balance2,
+            coin_a_balance: balance1, 
+            coin_b_balance: balance2,
         });
     }
 
