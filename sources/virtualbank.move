@@ -59,11 +59,11 @@ module virtualbank::virtualbank {
     // Functions
     //==============================================================================================
     /// Initialize the admin capability and transfer it to the transaction sender.
-    public fun init(ctx: &mut TxContext) {
+    fun init(ctx: &mut TxContext) {
         let admin_cap = AdminCap {
             id: object::new(ctx),
         };
-        transfer::transfer(admin_cap, tx_context::sender(ctx))
+        transfer::transfer(admin_cap, ctx.sender());
     }
 
     /// Initializes a bank with two types of coins and an exchange rate.
@@ -112,18 +112,10 @@ module virtualbank::virtualbank {
 
     /// Swaps coins of type A for coins of type B based on the exchange rate.
     public entry fun swap_a_b<A, B>(coin: Coin<A>, bank: &mut Bank<A, B>, ctx: &mut TxContext) {
-        let coin_value = coin::value(&coin);
+        assert!(coin::value(&coin) > 0, EZeroValueSwap);
 
-        // Handle zero-value swap explicitly.
-        if coin_value == 0 {
-            return Err(EZeroValueSwap);
-        }
-
-        let required_b = coin_value * bank.rate;
-        
-        // Ensure the bank has enough balance of coin B.
-        assert!(balance::value(&bank.coin_b) >= required_b, EInsufficientBalanceB);
-
+        let required_b = coin::value(&coin) * bank.rate;
+    
         // Transfer the equivalent value of coin B to the user.
         let coin_b = coin::take(&mut bank.coin_b, required_b, ctx);
         let coin_a_balance = coin::into_balance(coin);
@@ -142,18 +134,10 @@ module virtualbank::virtualbank {
 
     /// Swaps coins of type B for coins of type A based on the exchange rate.
     public entry fun swap_b_a<A, B>(coin: Coin<B>, bank: &mut Bank<A, B>, ctx: &mut TxContext) {
-        let coin_value = coin::value(&coin);
-
-        // Handle zero-value swap explicitly.
-        if coin_value == 0 {
-            return Err(EZeroValueSwap);
-        }
-
-        let required_a = coin_value / bank.rate;
+        assert!(coin::value(&coin) > 0, EZeroValueSwap);
+    
+        let required_a = coin::value(&coin) * bank.rate;
         
-        // Ensure the bank has enough balance of coin A.
-        assert!(balance::value(&bank.coin_a) >= required_a, EInsufficientBalanceA);
-
         // Transfer the equivalent value of coin A to the user.
         let coin_a = coin::take(&mut bank.coin_a, required_a, ctx);
         let coin_b_balance = coin::into_balance(coin);
@@ -172,10 +156,8 @@ module virtualbank::virtualbank {
 
     /// Withdraws all coins of types A and B from the bank.
     #[allow(lint(self_transfer))]
-    public fun withdraw<A, B>(admin_cap: &AdminCap, bank: &mut Bank<A, B>, ctx: &mut TxContext) {
-        // Authorization check.
-        assert!(tx_context::sender(ctx) == admin_cap.id, EUnauthorized);
-
+    public fun withdraw<A, B>(_: &AdminCap, bank: &mut Bank<A, B>, ctx: &mut TxContext) {
+      
         let coin_a_balance = balance::value(&bank.coin_a);
         let coin_a = coin::take(&mut bank.coin_a, coin_a_balance, ctx);
         transfer::public_transfer(coin_a, tx_context::sender(ctx));
