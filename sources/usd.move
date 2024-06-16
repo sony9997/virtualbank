@@ -17,10 +17,7 @@
    - Executes a public transfer of the treasury object to the sender of the transaction, effectively minting the initial USD supply to that account.
  */
 module virtualbank::usd {
-    use std::option;
     use sui::coin;
-    use sui::transfer;
-    use sui::tx_context::{Self, TxContext};
 
     public struct USD has drop {}
 

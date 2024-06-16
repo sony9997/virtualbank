@@ -4,9 +4,6 @@ module virtualbank::virtualbank {
     //==============================================================================================
     use sui::balance::{Self, Balance};
     use sui::coin::{Self, Coin};
-    use sui::object::{Self, UID};
-    use sui::transfer;
-    use sui::tx_context::{Self, TxContext};
     use sui::event;
 
     //==============================================================================================
@@ -14,8 +11,7 @@ module virtualbank::virtualbank {
     //==============================================================================================
     const EInsufficientBalanceA: u64 = 11;
     const EInsufficientBalanceB: u64 = 12;
-    const EUnauthorized: u64 = 13;
-    const EZeroValueSwap: u64 = 14;
+    const EZeroValueSwap: u64 = 13;
 
     //==============================================================================================
     // Structs 
@@ -59,7 +55,7 @@ module virtualbank::virtualbank {
     // Functions
     //==============================================================================================
     /// Initialize the admin capability and transfer it to the transaction sender.
-    public fun init(ctx: &mut TxContext) {
+    fun init(ctx: &mut TxContext) {
         let admin_cap = AdminCap {
             id: object::new(ctx),
         };
@@ -115,9 +111,7 @@ module virtualbank::virtualbank {
         let coin_value = coin::value(&coin);
 
         // Handle zero-value swap explicitly.
-        if coin_value == 0 {
-            return Err(EZeroValueSwap);
-        }
+        assert!(coin_value > 0,EZeroValueSwap);
 
         let required_b = coin_value * bank.rate;
         
@@ -145,9 +139,7 @@ module virtualbank::virtualbank {
         let coin_value = coin::value(&coin);
 
         // Handle zero-value swap explicitly.
-        if coin_value == 0 {
-            return Err(EZeroValueSwap);
-        }
+        assert!(coin_value == 0,EZeroValueSwap);
 
         let required_a = coin_value / bank.rate;
         
@@ -172,10 +164,7 @@ module virtualbank::virtualbank {
 
     /// Withdraws all coins of types A and B from the bank.
     #[allow(lint(self_transfer))]
-    public fun withdraw<A, B>(admin_cap: &AdminCap, bank: &mut Bank<A, B>, ctx: &mut TxContext) {
-        // Authorization check.
-        assert!(tx_context::sender(ctx) == admin_cap.id, EUnauthorized);
-
+    public fun withdraw<A, B>(_admin_cap: &AdminCap,bank: &mut Bank<A, B>, ctx: &mut TxContext) {
         let coin_a_balance = balance::value(&bank.coin_a);
         let coin_a = coin::take(&mut bank.coin_a, coin_a_balance, ctx);
         transfer::public_transfer(coin_a, tx_context::sender(ctx));

@@ -17,10 +17,7 @@
    - Transfers the treasury capability to the address of the transaction sender, minting the initial supply of RMB.
  */
 module virtualbank::rmb {
-    use std::option;
     use sui::coin;
-    use sui::transfer;
-    use sui::tx_context::{Self, TxContext};
 
     public struct RMB has drop {}
 
